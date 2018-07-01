@@ -1,0 +1,7 @@
+name: VTekkitClassic
+version: 0.1
+main: Main.start
+commands:
+    hello:
+        description: Greets the player!
+        usage: /<command>
