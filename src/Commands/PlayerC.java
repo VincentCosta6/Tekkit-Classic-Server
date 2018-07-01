@@ -10,10 +10,6 @@ import Main.start;
 public class PlayerC implements CommandExecutor{
 
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] arg3) {
-		start.log(arg1.getName());
-		start.log(arg2);
-		for(String s: arg3)
-			start.log(s);
 		if(sender instanceof PlayerC)
 		{
 			

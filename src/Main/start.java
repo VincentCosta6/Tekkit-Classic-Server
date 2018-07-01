@@ -31,7 +31,7 @@ public class start extends JavaPlugin{
 		console = getServer().getConsoleSender();
 		log(ChatColor.GREEN + "Vincent's Tekkit Classic Plugin has initialized");
 		
-		String[] commands = {"Hello", "PlayerC"};
+		String[] commands = {"HelloC", "PlayerC"};
 		boolean result = registerCommands(commands);
 		if(!result) {
 			log(ChatColor.RED + "Server commands failed to register!");
@@ -39,7 +39,7 @@ public class start extends JavaPlugin{
 		}
 		
 		String[] events = {"BlockBreak"};
-		result = registerCommands(events);
+		result = registerEvents(events);
 		if(!result) {
 			log(ChatColor.RED + "Server events failed to register!");
 			Bukkit.shutdown();
