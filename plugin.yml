@@ -5,3 +5,6 @@ commands:
     hello:
         description: Greets the player!
         usage: /<command>
+    player:
+        description: Player commands
+        usage: /<player>

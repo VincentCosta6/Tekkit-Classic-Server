@@ -18,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -29,14 +31,14 @@ public class start extends JavaPlugin{
 		console = getServer().getConsoleSender();
 		log(ChatColor.GREEN + "Vincent's Tekkit Classic Plugin has initialized");
 		
-		String[] commands = {"Hello"};
+		String[] commands = {"Hello", "PlayerC"};
 		boolean result = registerCommands(commands);
 		if(!result) {
 			log(ChatColor.RED + "Server commands failed to register!");
 			Bukkit.shutdown();
 		}
 		
-		String[] events = {"Hello"};
+		String[] events = {"BlockBreak"};
 		result = registerCommands(events);
 		if(!result) {
 			log(ChatColor.RED + "Server events failed to register!");
@@ -53,7 +55,6 @@ public class start extends JavaPlugin{
 	{
 		try {
 			JavaPlugin plugin = (JavaPlugin) getServer().getPluginManager().getPlugin("VTekkitClassic");
-			System.out.println(plugin);
 			Method getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
 			getFileMethod.setAccessible(true);
 			File jar = (File) getFileMethod.invoke(plugin);
@@ -62,10 +63,11 @@ public class start extends JavaPlugin{
 			{
 				for(Class<?> c: classes)
 				{
-					
 					try {
 						if(s.contentEquals(c.getSimpleName()))
-							getCommand(s).setExecutor((CommandExecutor) c.newInstance());
+						{
+							getCommand(s.substring(0, s.length()-1)).setExecutor((CommandExecutor) c.newInstance());
+						}
 					}
 					catch(Exception e){
 						Bukkit.shutdown();
@@ -81,9 +83,36 @@ public class start extends JavaPlugin{
 			return false;
 		}
 	}
-	public boolean registerEvents()
+	public boolean registerEvents(String[] events)
 	{
-		return true;
+		PluginManager pm = getServer().getPluginManager();
+		try {
+			JavaPlugin plugin = (JavaPlugin) getServer().getPluginManager().getPlugin("VTekkitClassic");
+			Method getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
+			getFileMethod.setAccessible(true);
+			File jar = (File) getFileMethod.invoke(plugin);
+			Set<Class<?>> classes = getClasses(jar, "Listeners");
+			for(String s: events)
+			{
+				for(Class<?> c: classes)
+				{
+					try {
+						if(s.contentEquals(c.getSimpleName()))
+							pm.registerEvents((Listener)c.newInstance(), this);
+					}
+					catch(Exception e){
+						Bukkit.shutdown();
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	/**
@@ -106,6 +135,18 @@ public class start extends JavaPlugin{
 	{
 		try {
 			console.sendMessage(toLog + "");
+		}
+		catch (NullPointerException e) {
+			System.out.println("Console must be initialized first");
+		}
+		catch (Exception e) {
+			System.out.println("No idea what happened here");
+		}
+	}
+	public static void log(Object toLog) //Logs parameter to console
+	{
+		try {
+			console.sendMessage(toLog.toString());
 		}
 		catch (NullPointerException e) {
 			System.out.println("Console must be initialized first");
