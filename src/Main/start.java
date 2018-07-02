@@ -38,7 +38,7 @@ public class start extends JavaPlugin{
 			Bukkit.shutdown();
 		}
 		
-		String[] events = {"BlockBreak"};
+		String[] events = {"BlockBreak", "PlayerJoin"};
 		result = registerEvents(events);
 		if(!result) {
 			log(ChatColor.RED + "Server events failed to register!");
